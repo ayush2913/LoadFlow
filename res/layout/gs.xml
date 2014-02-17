@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="5dp" 
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+	android:paddingTop="5dp"
+	android:weightSum="100"
+    tools:context=".MainActivity" >
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="40"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tVgs1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No of Bus"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    android:weightSum="100">
+    <EditText
+        android:id="@+id/nobgs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="20" />
+    <Button
+        android:id="@+id/gogs"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="80"
+        android:text="Go" />
+</LinearLayout>
+</LinearLayout>
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_weight="15" >
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical" >
+		    
+				<TableLayout
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:id="@+id/busdata"
+				    android:shrinkColumns="*"
+				    android:stretchColumns="*" >
+				</TableLayout>
+			</LinearLayout>
+	</ScrollView>
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="45"
+    android:orientation="vertical" >
+		<Button
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:id="@+id/nextgs"
+		    android:text="Next"/>
+</LinearLayout>
+</LinearLayout>
