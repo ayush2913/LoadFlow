@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,19 +23,19 @@ import android.widget.TextView;
 public class GaussSiedel extends Activity{
 	
 	Button go,next;
-	TextView enter;
 	EditText busno;
 	TableLayout busdetails;
-	ArrayList<ArrayList<String>> bd = new ArrayList<ArrayList<String>>();
+	ArrayList<ArrayList<String>> bd;
 	int n;
-
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gs);
 		go = (Button) findViewById(R.id.gogs);
-		enter = (TextView) findViewById(R.id.tVgs1);
+		//enter = (TextView) findViewById(R.id.tVgs1);
 		busno = (EditText) findViewById(R.id.nobgs);
 		next = (Button) findViewById(R.id.nextgs);
 		busdetails = (TableLayout)findViewById(R.id.busdata);
@@ -45,22 +46,34 @@ public class GaussSiedel extends Activity{
 				// TODO Auto-generated method stub
 				String bus = busno.getText().toString();
 				n = Integer.parseInt(bus);
-				
 				generateTable(n);
 			}
 		});
 		next.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
 				setMatrix();
-				Intent openGS2 = new Intent("com.ayuhar.loadflow.GS2");
-				startActivity(openGS2);
+				Intent openGS = new Intent(GaussSiedel.this , Gs2.class);
+//				Bundle bundle = new Bundle();
+//				bundle.putSerializable("Bus Details", bd);
+//				openGS.putExtras(bundle);
+				for(int i = 0; i<n;i++){
+					openGS.putStringArrayListExtra(String.valueOf(i), bd.get(i));
+				}
+				openGS.putExtra("bus", n);
+				startActivity(openGS);
 			}
 		});
 	}
+	
+	
+	
 	public void setMatrix(){
+		bd = new ArrayList<ArrayList<String>>();
+		
+		
 		for(int i=1;i<=n;i++)
 		{ 
 		
@@ -70,37 +83,57 @@ public class GaussSiedel extends Activity{
 				//String bt = bustype.getSelectedItem().toString();
 				//Log.d("gg-s",bt);
 				bd.get(i-1).add(0, bustype.getSelectedItem().toString());
-			 
+				Log.d("gg-s",bd.get(i-1).get(0));
+				
+				
 				
 				if(bustype.getSelectedItem().toString()=="Slack")
 				{
 					EditText V = (EditText) R.getChildAt(2);
 					EditText theta = (EditText) R.getChildAt(3);
 					bd.get(i-1).add(1, "0");
+					Log.d("gg-s",bd.get(i-1).get(1));
 					bd.get(i-1).add(2, "0");
+					Log.d("gg-s",bd.get(i-1).get(2));
 					bd.get(i-1).add(3, V.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(3));
 					bd.get(i-1).add(4, theta.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(4));
 				}
+				
+				
 				if(bustype.getSelectedItem().toString()=="P-V")
 				{
 					EditText P = (EditText) R.getChildAt(2);
 					EditText V = (EditText) R.getChildAt(3);
 					bd.get(i-1).add(1, P.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(1));
 					bd.get(i-1).add(2, "0");
+					Log.d("gg-s",bd.get(i-1).get(2));
 					bd.get(i-1).add(3, V.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(3));
 					bd.get(i-1).add(4, "0");
+					Log.d("gg-s",bd.get(i-1).get(4));
 				}
+				
+				
 				if(bustype.getSelectedItem().toString()=="P-Q")
 				{
 					EditText P = (EditText) R.getChildAt(2);
 					EditText Q = (EditText) R.getChildAt(3);
 					bd.get(i-1).add(1, P.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(1));
 					bd.get(i-1).add(2, Q.getText().toString());
+					Log.d("gg-s",bd.get(i-1).get(2));
 					bd.get(i-1).add(3, "1");
+					Log.d("gg-s",bd.get(i-1).get(3));
 					bd.get(i-1).add(4, "0");
+					Log.d("gg-s",bd.get(i-1).get(4));
 				}
 		}
 	}
+	
+
 	public void generateTable(int n){
 		busdetails.removeAllViews();
 		TableRow row1, row;
@@ -171,4 +204,5 @@ public class GaussSiedel extends Activity{
 			busdetails.addView(row , new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT) );
 		}
 	}
+
 }

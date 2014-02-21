@@ -26,21 +26,21 @@ public final class R {
     public static final class id {
         public static final int LinearLayout1=0x7f080003;
         public static final int action_settings=0x7f080011;
-        public static final int busdata=0x7f080007;
-        public static final int gogs=0x7f080006;
-        public static final int gogs2=0x7f08000b;
+        public static final int busdata=0x7f080006;
+        public static final int gogs=0x7f080005;
+        public static final int gogs2=0x7f080009;
         public static final int gonr=0x7f080010;
         public static final int gs=0x7f080002;
-        public static final int linedata=0x7f08000c;
-        public static final int nextgs=0x7f080008;
-        public static final int nobgs=0x7f080005;
+        public static final int linedata=0x7f08000a;
+        public static final int nextgs=0x7f080007;
+        public static final int nobgs=0x7f080004;
         public static final int nobnr=0x7f08000f;
-        public static final int nolgs=0x7f08000a;
+        public static final int noigs=0x7f08000b;
+        public static final int nolgs=0x7f080008;
         public static final int nr=0x7f080001;
         public static final int okgs=0x7f08000d;
-        public static final int tVgs1=0x7f080004;
-        public static final int tVgs2=0x7f080009;
         public static final int tVnr1=0x7f08000e;
+        public static final int tolr=0x7f08000c;
         public static final int tv1=0x7f080000;
     }
     public static final class layout {

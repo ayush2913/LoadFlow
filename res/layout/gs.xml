@@ -14,15 +14,10 @@
 <LinearLayout 
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:layout_weight="40"
+    android:layout_weight="43"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tVgs1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No of Bus"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
 <LinearLayout 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -33,6 +28,7 @@
         android:id="@+id/nobgs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="Enter Number of Buses"
         android:layout_weight="20" />
     <Button
         android:id="@+id/gogs"
@@ -46,7 +42,7 @@
 	<ScrollView
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:layout_weight="15" >
+	    android:layout_weight="12" >
 		<LinearLayout 
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
