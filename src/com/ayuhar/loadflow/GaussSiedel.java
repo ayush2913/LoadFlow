@@ -4,17 +4,23 @@ import java.util.ArrayList;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -27,7 +33,8 @@ public class GaussSiedel extends Activity{
 	TableLayout busdetails;
 	ArrayList<ArrayList<String>> bd;
 	int n;
-	
+	Double qmax,qmin;
+	boolean dialogboxq = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,8 @@ public class GaussSiedel extends Activity{
 				for(int i = 0; i<n;i++){
 					openGS.putStringArrayListExtra(String.valueOf(i), bd.get(i));
 				}
+				openGS.putExtra("Qmax", qmax);
+				openGS.putExtra("Qmin", qmin);
 				openGS.putExtra("bus", n);
 				startActivity(openGS);
 			}
@@ -165,12 +174,12 @@ public class GaussSiedel extends Activity{
 			spinner.setAdapter(spinnerArrayAdapter);
 			spinner.setId(i);
 			et2 = new EditText(this);
+			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
 			et2.setId(1000+i);
 			et3 = new EditText(this);
+			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
 			et3.setId(10000+i);
-			
 			spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
 				@Override
 	            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 	                // TODO Auto-generated method stub
@@ -179,15 +188,43 @@ public class GaussSiedel extends Activity{
 	                	et2.setHint("Enter V");
 	                	et3.setHint("Enter <");
 	                }
+	                
+	                
 	                if (item=="P-V") {
 	                	et2.setHint("Enter P");
 	                	et3.setHint("Enter V");
+	                	if(dialogboxq==false){
+	                		dialogboxq =true;
+	                	AlertDialog EnterQmaxQmin = new AlertDialog.Builder(GaussSiedel.this).create();
+	                	EnterQmaxQmin.setTitle("Enter Permissible Q");
+	                	EnterQmaxQmin.setMessage("Leave Blank if Not Available");
+	                	LinearLayout lila1= new LinearLayout(GaussSiedel.this);
+	                	lila1.setOrientation(1);
+	                	final EditText Qmax = new EditText(GaussSiedel.this);
+	                	Qmax.setHint("Enter Maximum Q");
+	                	final EditText Qmin = new EditText(GaussSiedel.this);
+	                	Qmin.setHint("Enter Minimum Q");
+	                	lila1.addView(Qmax);
+	                	lila1.addView(Qmin);
+	                	EnterQmaxQmin.setView(lila1);
+	                	EnterQmaxQmin.setButton("Ok", new DialogInterface.OnClickListener() {
+								
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+								if(Qmax.getText().toString().equalsIgnoreCase("")) qmax = 0.00;
+								else qmax = Double.parseDouble(Qmax.getText().toString());
+								if(Qmin.getText().toString().equalsIgnoreCase("")) qmin = 0.00;
+								else qmin = Double.parseDouble(Qmin.getText().toString());
+							}
+						});
+	                	EnterQmaxQmin.show();	
+	                }
 	                }
 	                if (item=="P-Q") {
 	                	et2.setHint("Enter P");
 	                	et3.setHint("Enter Q");
 	                }
-
 	            }
 
 	            @Override
@@ -202,6 +239,7 @@ public class GaussSiedel extends Activity{
 			row.addView(et2);
 			row.addView(et3);
 			busdetails.addView(row , new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT) );
+			dialogboxq = false;
 		}
 	}
 

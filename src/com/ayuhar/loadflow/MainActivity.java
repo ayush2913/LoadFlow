@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
 	
 	Button nr, gs;
 	TextView tv1 ;
+	int key;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent openNR = new Intent("com.ayuhar.loadflow.NEWTONRAPHSON");
+				key = 1;
+				Intent openNR = new Intent("com.ayuhar.loadflow.GAUSSSIEDEL");
+				openNR.putExtra("Key", key);
 				startActivity(openNR);
 			}
 		});
@@ -35,13 +38,15 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				key  = 0;
 				Intent openGS = new Intent("com.ayuhar.loadflow.GAUSSSIEDEL");
+				openGS.putExtra("Key", key);
 				startActivity(openGS);
 			}
 		});
     }
-
-
+    
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

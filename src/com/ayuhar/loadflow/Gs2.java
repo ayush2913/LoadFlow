@@ -6,6 +6,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -26,6 +27,7 @@ public class Gs2 extends Activity{
 	ArrayList<ArrayList<String>> ld, busdetailsmatrix;
 	int l, iter, numberofbus;
 	SolveGS gld ;
+	Double maxQ, minQ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -35,6 +37,8 @@ public class Gs2 extends Activity{
 		busdetailsmatrix = new ArrayList<ArrayList<String>>();
 		Intent intent = this.getIntent();
 		numberofbus = intent.getIntExtra("bus", 100);
+		maxQ = intent.getDoubleExtra("Qmax", 0);
+		minQ = intent.getDoubleExtra("Qmin", 0);
 		for(int i = 0;i<numberofbus;i++){
 			busdetailsmatrix.add(i, intent.getStringArrayListExtra(String.valueOf(i)));
 		}
@@ -141,9 +145,11 @@ public class Gs2 extends Activity{
 			//spinner1.setId(i);
 			
 			et1 = new EditText(this);
+			//et1.setInputType(InputType.TYPE_CLASS_NUMBER);
 			//et1.setId(1000+i);
 			
 			et2 = new EditText(this);
+			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
 			//et2.setId(10000+i);
 			
 //			spinner1.setOnItemSelectedListener(new OnItemSelectedListener() {
