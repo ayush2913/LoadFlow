@@ -22,12 +22,13 @@ public class Gs2 extends Activity{
 
 	Button gof,ok;
 	//TextView enol;
-	EditText lineno, itergs;
+	EditText lineno, itergs, Tolerance;
 	TableLayout linedetails;
 	ArrayList<ArrayList<String>> ld, busdetailsmatrix;
-	int l, iter, numberofbus;
+	int l, iter, numberofbus, key;
 	SolveGS gld ;
-	Double maxQ, minQ;
+	SolveNR solve;
+	String maxQ, minQ, tolerance;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -37,8 +38,9 @@ public class Gs2 extends Activity{
 		busdetailsmatrix = new ArrayList<ArrayList<String>>();
 		Intent intent = this.getIntent();
 		numberofbus = intent.getIntExtra("bus", 100);
-		maxQ = intent.getDoubleExtra("Qmax", 0);
-		minQ = intent.getDoubleExtra("Qmin", 0);
+		key = intent.getIntExtra("Key", 0);
+		maxQ = intent.getStringExtra("Qmax");
+		minQ = intent.getStringExtra("Qmin");
 		for(int i = 0;i<numberofbus;i++){
 			busdetailsmatrix.add(i, intent.getStringArrayListExtra(String.valueOf(i)));
 		}
@@ -46,6 +48,7 @@ public class Gs2 extends Activity{
 		//enol = (TextView) findViewById(R.id.tVgs2);
 		lineno = (EditText) findViewById(R.id.nolgs);
 		itergs = (EditText) findViewById(R.id.noigs);
+		Tolerance = (EditText) findViewById(R.id.tolr);
 		ok = (Button) findViewById(R.id.okgs);
 		linedetails = (TableLayout)findViewById(R.id.linedata);
 		gof.setOnClickListener(new View.OnClickListener() {
@@ -66,12 +69,31 @@ public class Gs2 extends Activity{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String iteration = itergs.getText().toString();
+				tolerance = Tolerance.getText().toString();
 				iter = Integer.parseInt(iteration);
 				lineImpedanceMatrix(l);
 				Log.d("Bus Type", busdetailsmatrix.get(0).get(0));
-				gld = new SolveGS();
-				gld.getld(busdetailsmatrix, ld ,numberofbus, l, iter);
-				gld.evaluate();
+				if(key == 0){
+					gld = new SolveGS();
+					gld.getld(busdetailsmatrix, ld ,numberofbus, l, iter, maxQ, minQ, tolerance);
+					gld.evaluate();
+					busdetailsmatrix = gld.busdet;
+				}
+				if(key ==1){
+					solve = new SolveNR();
+					solve.getdetails(busdetailsmatrix, ld, numberofbus, l, iter, maxQ, minQ, tolerance);
+					solve.evaluate();
+					busdetailsmatrix = solve.busdet;
+				}
+				Intent openGS = new Intent(Gs2.this , ResultsLoadFlow.class);
+//				Bundle bundle = new Bundle();
+//				bundle.putSerializable("Bus Details", bd);
+//				openGS.putExtras(bundle);
+				for(int i = 0; i<numberofbus;i++){
+					openGS.putStringArrayListExtra(String.valueOf(i), busdetailsmatrix.get(i));
+				}
+				openGS.putExtra("bus", numberofbus);
+				startActivity(openGS);
 			}
 		});
 	}
@@ -86,8 +108,8 @@ public class Gs2 extends Activity{
 			Spinner to =(Spinner) R.getChildAt(1);
 			EditText rez = (EditText) R.getChildAt(2);
 			EditText imz = (EditText) R.getChildAt(3);
-			//String bt = bustype.getSelectedItem().toString();
-			//Log.d("gg-s",bt);
+
+			
 			ld.get(i-1).add(0, from.getSelectedItem().toString());
 			Log.d("gg-s",ld.get(i-1).get(0));
 			ld.get(i-1).add(1, to.getSelectedItem().toString());
@@ -142,44 +164,12 @@ public class Gs2 extends Activity{
 			        android.R.layout.simple_spinner_dropdown_item,
 			        spinner);
 			spinner2.setAdapter(spinner2ArrayAdapter);
-			//spinner1.setId(i);
 			
 			et1 = new EditText(this);
-			//et1.setInputType(InputType.TYPE_CLASS_NUMBER);
-			//et1.setId(1000+i);
 			
 			et2 = new EditText(this);
-			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
-			//et2.setId(10000+i);
-			
-//			spinner1.setOnItemSelectedListener(new OnItemSelectedListener() {
-//
-//				@Override
-//	            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//	                // TODO Auto-generated method stub
-//	                Object item = arg0.getItemAtPosition(arg2);
-//	                if (item=="Slack") {
-//	                	et2.setHint("Enter V");
-//	                	et3.setHint("Enter <");
-//	                }
-//	                if (item=="P-V") {
-//	                	et2.setHint("Enter P");
-//	                	et3.setHint("Enter V");
-//	                }
-//	                if (item=="P-Q") {
-//	                	et2.setHint("Enter P");
-//	                	et3.setHint("Enter Q");
-//	                }
-//
-//	            }
-//
-//	            @Override
-//	            public void onNothingSelected(AdapterView<?> arg0) {
-//	                // TODO Auto-generated method stub
-//
-//	            }
-//	        });
-			
+			et1.setInputType(3);
+			et2.setInputType(3);
 			row.addView(spinner1);
 			row.addView(spinner2);
 			row.addView(et1);
@@ -187,9 +177,4 @@ public class Gs2 extends Activity{
 			linedetails.addView(row , new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT) );
 		}
 	}
-//	public void getbd(ArrayList<ArrayList<String>> a){
-//		busdetailsmatrix = new ArrayList<ArrayList<String>>(a);
-//		Log.d("Bus Type",a.get(0).get(0));
-//		Log.d("Bus Type",busdetailsmatrix.get(0).get(0));
-//	}
 }

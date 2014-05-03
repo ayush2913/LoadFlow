@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="5dp"
     android:id="@+id/LinearLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-	android:weightSum="100" >
-<LinearLayout 
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="43"
-    android:orientation="vertical" >
+    android:paddingBottom="5dp" 
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+	android:paddingTop="5dp"
+	android:weightSum="100"
+    tools:context=".MainActivity" >
 
-<ScrollView android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">    
-<LinearLayout 
+<LinearLayout
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
+    android:layout_height="45dp"
     android:orientation="horizontal"
-    android:weightSum="100">
+    android:weightSum="100" >
+
     <EditText
-        android:inputType="number"
         android:id="@+id/nobgs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="20"
         android:hint="Enter Number of Buses"
-        android:layout_weight="20" />
+        android:inputType="number" />
+
     <Button
         android:id="@+id/gogs"
         style="?android:attr/buttonStyleSmall"
@@ -36,37 +34,46 @@
         android:layout_height="wrap_content"
         android:layout_weight="80"
         android:text="Go" />
+
 </LinearLayout>
-</ScrollView>
-</LinearLayout>
+
 	<ScrollView
 	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:layout_weight="12" >
-		<LinearLayout 
+	    android:layout_height="340dp"
+	    android:layout_weight="80" >
+
+		<LinearLayout
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
+		    android:layout_marginTop="10dp"
 		    android:orientation="vertical" >
 		    
 				<TableLayout
-				    android:id="@+id/busdata"
 				    android:layout_width="fill_parent"
-				    android:layout_height="match_parent"
+				    android:layout_height="wrap_content"
+				    android:id="@+id/busdata"
+				    android:focusableInTouchMode="true"
 				    android:shrinkColumns="*"
 				    android:stretchColumns="*" >
-
 				</TableLayout>
 			</LinearLayout>
 	</ScrollView>
-<LinearLayout 
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="45"
-    android:orientation="vertical" >
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="30dp"
+    android:layout_weight="10"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:weightSum="100" >
+
 		<Button
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
 		    android:id="@+id/nextgs"
-		    android:text="Next"/>
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_gravity="center_vertical|center_horizontal"
+		    android:layout_weight="30"
+		    android:text="Next" />
+
 </LinearLayout>
 </LinearLayout>

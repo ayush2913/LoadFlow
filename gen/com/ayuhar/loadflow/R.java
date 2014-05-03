@@ -25,7 +25,7 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080003;
-        public static final int action_settings=0x7f08000e;
+        public static final int action_settings=0x7f08000f;
         public static final int busdata=0x7f080006;
         public static final int gogs=0x7f080005;
         public static final int gogs2=0x7f080009;
@@ -37,6 +37,7 @@ public final class R {
         public static final int nolgs=0x7f080008;
         public static final int nr=0x7f080001;
         public static final int okgs=0x7f08000d;
+        public static final int resultsdata=0x7f08000e;
         public static final int tolr=0x7f08000c;
         public static final int tv1=0x7f080000;
     }
@@ -44,6 +45,7 @@ public final class R {
         public static final int activity_main=0x7f030000;
         public static final int gs=0x7f030001;
         public static final int gsnxt=0x7f030002;
+        public static final int results=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f070000;

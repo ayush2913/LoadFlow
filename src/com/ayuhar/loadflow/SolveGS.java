@@ -13,15 +13,19 @@ public class SolveGS {
 	double[][]  imY;
 	double[][] thetaY;
 	double[][] magY;
+	String maximumQ,minimumQ,tolerance;
+	double maxQ,minQ, maxDeltaV;
 	
-	public void getld(ArrayList<ArrayList<String>> a, ArrayList<ArrayList<String>> b, int x, int y, int z){
+	public void getld(ArrayList<ArrayList<String>> a, ArrayList<ArrayList<String>> b, int x, int y, int z, String c, String d, String e){
 		busdet = new ArrayList<ArrayList<String>>(a);
 		li = new ArrayList<ArrayList<String>>();
 		li = b;
 		nol = y;
 		noi = z;
 		nob = x;
-		
+		maximumQ = c;
+		minimumQ = d;
+		tolerance = e;
 	}
 	public void formY(){
 		reY = new double[nob][nob];
@@ -61,6 +65,7 @@ public class SolveGS {
 		//Log.d("Bus Type", busdet.get(0).get(0));
 		formY();
 		for(int k = 0; k<noi; k++){
+			maxDeltaV = 0.000;
 			//Log.d("Bus Type", busdet.get(0).get(0));
 			for (int i = 0; i<nob; i++){
 				Log.d("Bus Type", busdet.get(i).get(0));
@@ -69,16 +74,7 @@ public class SolveGS {
 					continue;
 				}
 				else if(busdet.get(i).get(0).equalsIgnoreCase("P-V")){
-					Log.d("P-V Check", "P-V");
-					Double multiplier = 0.000;
-					for(int p=0; p<nob; p++){
-						Double gsin = reY[i][p]*(Math.sin(Double.parseDouble(busdet.get(i).get(4))-Double.parseDouble(busdet.get(p).get(4))));
-						Double bcos = imY[i][p]*(Math.cos(Double.parseDouble(busdet.get(i).get(4))-Double.parseDouble(busdet.get(p).get(4))));
-						multiplier += (gsin-bcos)*Double.parseDouble(busdet.get(p).get(3));
-					}
-					Double qi = multiplier*Double.parseDouble(busdet.get(i).get(3));
-					Log.d("Qi", qi.toString());
-					busdet.get(i).set(2, qi.toString());
+					calculateQi(i);
 					calculateV(i);
 				}
 				else if(busdet.get(i).get(0).equalsIgnoreCase("P-Q")){
@@ -86,10 +82,14 @@ public class SolveGS {
 					calculateV(i);
 				}
 			}
+			if(tolerance.equalsIgnoreCase("")==false){
+				if(maxDeltaV < Double.parseDouble(tolerance)) break;
+				else continue;
+			}
 		}
 	}
 	public void calculateV(int i){
-		Log.d("Check", "Ok");
+		Log.d("Check", String.valueOf(i));
 		Double magPQ, thetaPQ, thetaterm1,magterm1;
 		Double reterm2,imterm2,reterm3,imterm3, reterm1, imterm1;
 		reterm1 = imterm1 = reterm2 = imterm2 = reterm3 = imterm3 = 0.000;
@@ -131,9 +131,40 @@ public class SolveGS {
 		Log.d("Real Yii", String.valueOf(reY[i][i]));
 		Log.d("Im Yii", String.valueOf(imY[i][i]));
 		Double thetaV = Math.atan2((imterm1-imterm2-imterm3),(reterm1-reterm2-reterm3))-thetaY[i][i];
+		if(maxDeltaV < Math.abs(magV-Double.parseDouble(busdet.get(i).get(3)))){
+			maxDeltaV = Math.abs(magV-Double.parseDouble(busdet.get(i).get(3)));
+		}
 		busdet.get(i).set(3,magV.toString());
 		busdet.get(i).set(4,thetaV.toString());
 		Log.d("Answer V", busdet.get(i).get(3));
 		Log.d("Answer theta", busdet.get(i).get(4));
+	}
+	public void calculateQi(int i){
+		double multiplier = 0.000;
+		for(int p=0; p<nob; p++){
+			double gsin = reY[i][p]*(Math.sin(Double.parseDouble(busdet.get(i).get(4))-Double.parseDouble(busdet.get(p).get(4))));
+			double bcos = imY[i][p]*(Math.cos(Double.parseDouble(busdet.get(i).get(4))-Double.parseDouble(busdet.get(p).get(4))));
+			multiplier += (gsin-bcos)*Double.parseDouble(busdet.get(p).get(3));
+		}
+		double qi = multiplier*Double.parseDouble(busdet.get(i).get(3));
+		Log.d("Qi", String.valueOf(qi));
+		if(maximumQ.equalsIgnoreCase("")==false & minimumQ.equalsIgnoreCase("")==false){
+			maxQ = Double.parseDouble(maximumQ);
+			minQ = Double.parseDouble(minimumQ);
+			if(qi< maxQ & qi>minQ) busdet.get(i).set(2, String.valueOf(qi));
+			else if(qi > maxQ) busdet.get(i).set(2, String.valueOf(maxQ));
+			else busdet.get(i).set(2, String.valueOf(minQ));
+		}
+		else if(maximumQ.equalsIgnoreCase("")==true & minimumQ.equalsIgnoreCase("")==false){
+			minQ = Double.parseDouble(minimumQ);
+			if(qi>minQ) busdet.get(i).set(2, String.valueOf(qi));
+			else busdet.get(i).set(2, String.valueOf(minQ));
+		}
+		else if(minimumQ.equalsIgnoreCase("")==true & maximumQ.equalsIgnoreCase("")==false){
+			maxQ = Double.parseDouble(maximumQ);
+			if(qi<maxQ) busdet.get(i).set(2, String.valueOf(qi));
+			else busdet.get(i).set(2, String.valueOf(maxQ));
+		}
+		else busdet.get(i).set(2, String.valueOf(qi));
 	}
 }

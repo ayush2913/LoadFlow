@@ -18,17 +18,17 @@ public class SolveNR {
 	double maxQ, minQ, qi, pi, multiplier, maxDeltaP, maxDeltaQ;
 	double[][] reY,imY,magY,thetaY,jacobian;
 	double[] deltaPi , deltaQi, deltaPQ, deltaVtheta;
-	String tolerance;
+	String tolerance, maximumQ, minimumQ;
 	
-	public void getld(ArrayList<ArrayList<String>> a, ArrayList<ArrayList<String>> b, int x, int y, int z, double c, double d, String e){
+	public void getdetails(ArrayList<ArrayList<String>> a, ArrayList<ArrayList<String>> b, int x, int y, int z, String c, String d, String e){
 		busdet = new ArrayList<ArrayList<String>>(a);
 		li = new ArrayList<ArrayList<String>>();
 		li = b;
 		nol = y;
 		noi = z;
 		nob = x;
-		maxQ = c;
-		minQ = d;
+		maximumQ = c;
+		minimumQ = d;
 		tolerance = e;
 	}
 	public void formY(){
@@ -61,14 +61,20 @@ public class SolveNR {
 				thetaY[i][j] = Math.atan2(imY[i][j], reY[i][j]);
 			}
 		}
+		for(int i =0; i<nob; i++){
+			for(int j =0; j<nob; j++){ 
+				Log.d(String.valueOf(i)+String.valueOf(i), String.valueOf(reY[i][j]));
+				Log.d(String.valueOf(i)+String.valueOf(i), String.valueOf(imY[i][j]));
+			}
+		}
 	}
 	public void evaluate(){
 		deltaPi = new double[nob];
 		deltaQi = new double[nob];
-		//Log.d("number of Bus",String.valueOf(nob) );
-		//Log.d("number of line",String.valueOf(nol) );
-		//Log.d("number of iteration",String.valueOf(noi) );
-		//Log.d("Bus Type", busdet.get(0).get(0));
+		Log.d("number of Bus",String.valueOf(nob) );
+		Log.d("number of line",String.valueOf(nol) );
+		Log.d("number of iteration",String.valueOf(noi) );
+		Log.d("Bus Type", busdet.get(0).get(0));
 		formY();
 		for(int k = 0; k<noi; k++){
 			maxDeltaP = 0.00;
@@ -89,12 +95,15 @@ public class SolveNR {
 					calculatedeltaQi(i);
 				}
 			}
-			if(tolerance.equalsIgnoreCase("")==false & maxDeltaQ<Double.parseDouble(tolerance) & maxDeltaP<Double.parseDouble(tolerance)){
-				formJacobian();
-				formDeltaPQ();
-				solve();
-				updateVtheta();
-				break;
+			Log.d("Tolerance",tolerance);
+			if(tolerance.equalsIgnoreCase("")==false){
+				if( maxDeltaQ<Double.parseDouble(tolerance) & maxDeltaP<Double.parseDouble(tolerance)){
+					formJacobian();
+					formDeltaPQ();
+					solve();
+					updateVtheta();
+					break;
+				}
 			}
 			formJacobian();
 			formDeltaPQ();
@@ -110,7 +119,9 @@ public class SolveNR {
 			multiplier += (gcos+bsin)*Double.parseDouble(busdet.get(p).get(3));
 		}
 		double pi = multiplier*Double.parseDouble(busdet.get(i).get(3));
+		Log.d("Pi", String.valueOf(pi));
 		deltaPi[i] = Double.parseDouble(busdet.get(i).get(1)) - pi;
+		Log.d("deltaPi", String.valueOf(deltaPi[i]));
 		if(maxDeltaP < Math.abs(deltaPi[i])) maxDeltaP = Math.abs(deltaPi[i]);
 	}
 	public void calculatedeltaQi(int i){
@@ -127,33 +138,77 @@ public class SolveNR {
 			deltaQi[i] = Double.parseDouble(busdet.get(i).get(2)) - qi;
 		}
 		else if(busdet.get(i).get(0).equalsIgnoreCase("P-V") == true){
-			if(qi< maxQ & qi>minQ){
+			if(maximumQ.equalsIgnoreCase("")==false & minimumQ.equalsIgnoreCase("")==false){
+				maxQ = Double.parseDouble(maximumQ);
+				minQ = Double.parseDouble(minimumQ);
+				if(qi< maxQ & qi>minQ){
+					numberofPV++;
+					busdet.get(i).add(5, "P-V");
+					busdet.get(i).set(2, String.valueOf(qi));
+					deltaQi[i] = 0.0000;
+				}
+				else if(qi > maxQ){
+					numberofPQ++;
+					busdet.get(i).add(5, "P-V-Q");
+					busdet.get(i).set(2, String.valueOf(maxQ));
+					deltaQi[i] = maxQ - qi;
+				}
+				else{
+					numberofPQ++;
+					busdet.get(i).add(5, "P-V-Q");
+					busdet.get(i).set(2, String.valueOf(minQ));
+					deltaQi[i] = minQ - qi;
+				}
+			}
+			else if(maximumQ.equalsIgnoreCase("")==true & minimumQ.equalsIgnoreCase("")==false){
+				minQ = Double.parseDouble(minimumQ);
+				if(qi>minQ){
+					numberofPV++;
+					busdet.get(i).add(5, "P-V");
+					busdet.get(i).set(2, String.valueOf(qi));
+					deltaQi[i] = 0.0000;
+				}
+				else{
+					numberofPQ++;
+					busdet.get(i).add(5, "P-V-Q");
+					busdet.get(i).set(2, String.valueOf(minQ));
+					deltaQi[i] = minQ - qi;
+				}
+			}
+			else if(minimumQ.equalsIgnoreCase("")==true & maximumQ.equalsIgnoreCase("")==false){
+				maxQ = Double.parseDouble(maximumQ);
+				if(qi<maxQ){
+					numberofPV++;
+					busdet.get(i).add(5, "P-V");
+					busdet.get(i).set(2, String.valueOf(qi));
+					deltaQi[i] = 0.0000;
+				}
+				else{
+					numberofPQ++;
+					busdet.get(i).add(5, "P-V-Q");
+					busdet.get(i).set(2, String.valueOf(maxQ));
+					deltaQi[i] = maxQ - qi;
+				}
+			}
+			else{
 				numberofPV++;
 				busdet.get(i).add(5, "P-V");
 				busdet.get(i).set(2, String.valueOf(qi));
 				deltaQi[i] = 0.0000;
 			}
-			else if(qi > maxQ){
-				numberofPQ++;
-				busdet.get(i).add(5, "P-V-Q");
-				busdet.get(i).set(2, String.valueOf(maxQ));
-				deltaQi[i] = maxQ - qi;
-			}
-			else{
-				numberofPQ++;
-				busdet.get(i).add(5, "P-V-Q");
-				busdet.get(i).set(2, String.valueOf(minQ));
-				deltaQi[i] = minQ - qi;
-			}
 		}
 		if(maxDeltaQ < Math.abs(deltaQi[i])) maxDeltaQ = Math.abs(deltaQi[i]);
+		Log.d("Qi", String.valueOf(qi));
+		Log.d("deltaQi", String.valueOf(deltaQi[i]));
 	}
 	public void formJacobian(){
+		Log.d("jacobian elements", String.valueOf(2*numberofPQ+numberofPV));
 		jacobian = new double[2*numberofPQ+numberofPV][2*numberofPQ+numberofPV];
 		double H,M,N,L;
 		int jcol = 0;
 		int jrow = 0;
 		for(int i=0;i<nob;i++){
+			jcol = 0;
 			for(int j=0;j<nob;j++){
 				if(busdet.get(i).get(5).equalsIgnoreCase("Slack") == true || busdet.get(j).get(5).equalsIgnoreCase("Slack") == true) continue;
 				else{
@@ -178,6 +233,8 @@ public class SolveNR {
 						jacobian[jrow+1][jcol] = M;
 						jacobian[jrow+1][jcol+1] = L;
 						jcol = jcol+2;
+						Log.d("PQ PQ", String.valueOf(H)+"	"+String.valueOf(N)+"	"+String.valueOf(M)+"	"+String.valueOf(L));
+						Log.d("Jcol", String.valueOf(jcol));
 					}
 					else if((busdet.get(i).get(5).equalsIgnoreCase("P-Q")==true || busdet.get(i).get(5).equalsIgnoreCase("P-V-Q")==true) & busdet.get(j).get(5).equalsIgnoreCase("P-V")==true){
 						if(i==j){
@@ -195,6 +252,8 @@ public class SolveNR {
 						jacobian[jrow][jcol] = H;
 						jacobian[jrow+1][jcol] = M;
 						jcol = jcol+1;
+						Log.d("PQ PV", String.valueOf(H)+"	"+String.valueOf(M));
+						Log.d("Jcol", String.valueOf(jcol));
 					}
 					else if((busdet.get(j).get(5).equalsIgnoreCase("P-Q")==true || busdet.get(j).get(5).equalsIgnoreCase("P-V-Q")==true) & busdet.get(i).get(5).equalsIgnoreCase("P-V")==true){
 						if(i==j){
@@ -210,8 +269,10 @@ public class SolveNR {
 							N = (gcos+bsin)*Double.parseDouble(busdet.get(i).get(3))*Double.parseDouble(busdet.get(j).get(3));
 						}
 						jacobian[jrow][jcol] = H;
-						jacobian[jrow+1][jcol] = N;
+						jacobian[jrow][jcol+1] = N;
 						jcol += 2;
+						Log.d("PV PQ", String.valueOf(H)+"	"+String.valueOf(N));
+						Log.d("Jcol PV PQ", String.valueOf(jcol));
 					}
 					else if(busdet.get(i).get(5).equalsIgnoreCase("P-V")==true & busdet.get(j).get(5).equalsIgnoreCase("P-V")==true){
 						if(i==j){H = -Double.parseDouble(busdet.get(i).get(2))-(Double.parseDouble(busdet.get(i).get(2))*Double.parseDouble(busdet.get(i).get(2))*imY[i][i]);}
@@ -222,14 +283,20 @@ public class SolveNR {
 						}
 						jacobian[jrow][jcol] = H;
 						jcol+=1;
+						Log.d("PV PV", String.valueOf(H));
+						Log.d("Jcol", String.valueOf(jcol));
 					}
 				}
-			}
-						
+			}			
 			if(busdet.get(i).get(5).equalsIgnoreCase("Slack")==true) continue;
 			else if(busdet.get(i).get(5).equalsIgnoreCase("P-V")==true) jrow+=1;
 			else jrow+=2;
-			
+			Log.d("Jrow", String.valueOf(jrow));
+		}
+		for(int i = 0; i < 2*numberofPQ+numberofPV; i++){
+			for(int j = 0; j < 2*numberofPQ+numberofPV; j++){
+				Log.d("Jacobian", String.valueOf(jacobian[i][j]));
+			}
 		}
 	}
 	public void formDeltaPQ(){
@@ -246,6 +313,9 @@ public class SolveNR {
 				deltaPQ[row] = deltaPi[i];
 				row++;
 			}
+		}
+		for(int i = 0; i < 2*numberofPQ+numberofPV; i++){
+			Log.d("DeltaPQ", String.valueOf(deltaPQ[i]));
 		}
 	}
 	public void solve(){

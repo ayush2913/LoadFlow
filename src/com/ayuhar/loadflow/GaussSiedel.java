@@ -32,14 +32,16 @@ public class GaussSiedel extends Activity{
 	EditText busno;
 	TableLayout busdetails;
 	ArrayList<ArrayList<String>> bd;
-	int n;
-	Double qmax,qmin;
+	int n,key;
+	String qmax,qmin;
 	boolean dialogboxq = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		Intent intent = this.getIntent();
+		key = intent.getIntExtra("Key", 0);
 		setContentView(R.layout.gs);
 		go = (Button) findViewById(R.id.gogs);
 		//enter = (TextView) findViewById(R.id.tVgs1);
@@ -71,6 +73,7 @@ public class GaussSiedel extends Activity{
 				}
 				openGS.putExtra("Qmax", qmax);
 				openGS.putExtra("Qmin", qmin);
+				openGS.putExtra("Key", key);
 				openGS.putExtra("bus", n);
 				startActivity(openGS);
 			}
@@ -174,10 +177,10 @@ public class GaussSiedel extends Activity{
 			spinner.setAdapter(spinnerArrayAdapter);
 			spinner.setId(i);
 			et2 = new EditText(this);
-			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
+			et2.setInputType(3);
 			et2.setId(1000+i);
 			et3 = new EditText(this);
-			//et2.setInputType(InputType.TYPE_CLASS_NUMBER);
+			et3.setInputType(3);
 			et3.setId(10000+i);
 			spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 				@Override
@@ -212,10 +215,8 @@ public class GaussSiedel extends Activity{
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								// TODO Auto-generated method stub
-								if(Qmax.getText().toString().equalsIgnoreCase("")) qmax = 0.00;
-								else qmax = Double.parseDouble(Qmax.getText().toString());
-								if(Qmin.getText().toString().equalsIgnoreCase("")) qmin = 0.00;
-								else qmin = Double.parseDouble(Qmin.getText().toString());
+								qmax  = Qmax.getText().toString();
+								qmin = Qmin.getText().toString();
 							}
 						});
 	                	EnterQmaxQmin.show();	
